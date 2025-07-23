@@ -11,7 +11,7 @@ from utils.data_utils import get_participant_data
 from io import BytesIO
  
 
-st.set_page_config(page_title="Dashboard")
+st.set_page_config(page_title="Self Ordered Pointing Task Dashboard")
 project_name = 'sopt'
 experiment_URL = "http://selforderedpointingtask.firebaseapp.com/?ver="
 # Simulating data for the behavioral task

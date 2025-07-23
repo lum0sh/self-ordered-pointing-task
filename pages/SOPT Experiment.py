@@ -1,6 +1,6 @@
 import streamlit as st
  
-st.set_page_config(page_title="Experiment")
+st.set_page_config(page_title="Self Ordered Pointing Task")
 project_name = 'sopt'
 experiment_URL = "http://selforderedpointingtask.web.app/?ver="
 # Simulating data for the behavioral task
