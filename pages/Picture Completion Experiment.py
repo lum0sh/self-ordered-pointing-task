@@ -11,15 +11,9 @@ st.title('Experiment')
 # Input for participant ID
 username = st.text_input('Enter participant id', max_chars=8)
 
-# Button to trigger the redirect in a new tab
-if st.button("Submit"):
+# Button to submit the ID
+if st.button("Generate Link"):
     if username:
-        redirect_url = experiment_URL + username
-        st.markdown(f"""
-            <script>
-                window.open("{redirect_url}", "_blank");
-            </script>
-            <p>Opening experiment in a new tab: <a href="{redirect_url}" target="_blank">{redirect_url}</a></p>
-        """, unsafe_allow_html=True)
+        st.link_button("Go to experiment", experiment_URL + username)
     else:
         st.warning("Please enter a participant ID.")
