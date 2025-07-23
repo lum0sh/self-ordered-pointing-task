@@ -15,20 +15,14 @@ from io import BytesIO
 
 st.set_page_config(page_title="Picture Completion Dashboard")
 project_name = 'picompletion'
-# experiment_URL = "http://selforderedpointingtask.firebaseapp.com/?ver="
-# Simulating data for the behavioral task
-# participant_ids = get_participant_ids(project_name)
+
 
 # Title of the app
 st.title('Dashboard')
  
 
 # Sidebar for user selection
-# selected_user = st.sidebar.selectbox('Select a Participant', participant_ids)
-# st.markdown(f"### Subject ID:  \n **{selected_user}**")
 selected_user = st.text_input("Enter completion code below:")
-
-
 
 ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -68,80 +62,16 @@ if selected_user:
         # Step 3: Play in Streamlit
         st.audio(audio_file, format=audio_blob["mimetype"])
         processed_trials = process_trials(trial)
-        st.download_button(
-            label="Download data",
-            data=download_data_from_db(processed_trials, subject, frame, state),
-            file_name=f"{selected_user}_{ts}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
 
         processed_trials = processed_trials[['trialNumber','tileBlockIndex',
-                                            'responseTime','numTiles','pageNumber']]
-        processed_trials.loc[:,'responseTime_s'] = processed_trials['responseTime']/1000.
+                                            'responseTime','goCueTime','pageNumber']]
+        processed_trials['responseTime_s'] = processed_trials['responseTime'] / 1000.
+        processed_trials['goCueTime_s'] = processed_trials['goCueTime'] / 1000.
 
-        total_time, total_trials = st.columns(2)
-
-        with total_time:
-            st.metric("Total Time",str(round(float(processed_trials['responseTime_s'].sum()),2))+' s')
-
-        with total_trials:
-            st.metric("Total Trials",processed_trials.shape[0])
-
-        # st.table(processed_trials)
-
+        processed_trials['timeStamps'] = processed_trials['goCueTime_s'].diff().cumsum()
         
-        # Create the figure and axis
-    #     fig, ax = plt.subplots(figsize=(10, 5))  # Adjust size if needed
-
-    #     # Generate the bar plot
- 
-    #     error_data = processed_trials.groupby(['numTiles', 'blockTrial'])['error'].sum().reset_index()
-
-
-    #     # Get unique hue values
-    #     unique_tiles = sorted(error_data['numTiles'].unique())
-    #     n_colors = len(unique_tiles)
-
-    #     # Choose a colormap
-    #     cmap = plt.get_cmap('viridis', n_colors)  # or 'viridis', 'plasma', etc.
-
-    #     # Map each hue level to a color
-    #     palette = {tile: cmap(i) for i, tile in enumerate(unique_tiles)}
-
-    #     # Plot with custom palette
-    #     sns.barplot(data=error_data, x='blockTrial', y='error', hue='numTiles', palette=palette, ax=ax)
-
- 
-            
-
-    #     # Set title and labels
-    #     ax.set_title("Number of Errors Across Trials", fontsize=14)
-    #     ax.set_xlabel("Trial Block", fontsize=12)
-    #     ax.set_ylabel("Error Count", fontsize=12)
-        
-        
-    #     # Set x-tick labels as blockTrial values
-    #     # ax.set_xticklabels([f"{idx[1]}" for idx in error_data.index], rotation=0, ha="right")
-
-    #     st.markdown("## Performance Report")
-    #     # Display the plot in Streamlit
-    #     st.pyplot(fig)
-
-    #     fig, ax = plt.subplots(figsize=(10, 5))  # Adjust size if needed
-
-    #     sns.scatterplot(processed_trials,x='trialNumber',y='responseTime',hue='numTiles',palette=palette, ax=ax)
-    #     ax.set_xlabel("Trial Number")
-    #     ax.set_ylabel("Reaction time (ms)")
-    #     ax.set_title("Reaction Time across trials")
-    #     st.pyplot(fig)
-
+        st.table(processed_trials[['trialNumber','responseTime_s','timeStamps','goCueTime_s']])
         
     else:
         st.write("Empty Dataframe")
 
-    # # ids :
-    #     # JKqowBchDRXfPI59CWjfJN46Hz02
-    #     # 10V6r5kdjTTwtBDacmjqtYsw3512
-    #     # ujYMAO8B8KhUdB6ZHmY333nQSIu1
-    #     # 35USuHJIWAojvzNvYCegnQQvQKCO
-        
