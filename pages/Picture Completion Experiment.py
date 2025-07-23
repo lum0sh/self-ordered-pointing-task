@@ -9,7 +9,5 @@ experiment_URL = "https://picturecompletion.web.app/?user="
 # Title of the app
 st.title('Experiment')
 username = st.text_input('Enter participant id',max_chars=8)
-
-if username:
-    st.link_button("Go to experiment",experiment_URL+username)
+st.link_button("Go to experiment",experiment_URL+username)
     
